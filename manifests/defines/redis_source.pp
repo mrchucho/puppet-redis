@@ -1,5 +1,5 @@
 define redis_source(
-    $version = 'v1.3.10',
+    $version = 'v2.0.2-stable',
     $path = '/usr/local/src',
     $bin = '/usr/local/bin',
     $owner = 'redis',
@@ -45,10 +45,13 @@ define redis_source(
         group => $group,
     }
     file { "/etc/init.d/redis-server":
-         content => template("redis/redis-server.erb"),
+         content => $operatingsystem ? {
+           'redhat' => template("redis/redis-server.redhat.erb"),
+           default  => template("redis/redis-server.erb")
+         },
          owner => root,
          group => root,
-         mode => 744,
+         mode => 755,
     }
     file { "/etc/redis.conf":
         ensure => present,

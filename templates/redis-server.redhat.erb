@@ -1,0 +1,56 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:     redis-server
+# Required-Start:   $syslog
+# Required-Stop:    $syslog
+# Should-Start:     $local_fs
+# Should-Stop:      $local_fs
+# Default-Start:    2 3 4 5
+# Default-Stop:     0 1 6
+# Short-Description:    redis-server - Persistent key-value db
+# Description:      redis-server - Persistent key-value db
+### END INIT INFO
+
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+# Source networking configuration.
+. /etc/sysconfig/network
+
+REDIS=/usr/local/bin/redis
+
+[ -f $REDIS ] || exit 0
+
+RETVAL=0
+
+case "$1" in
+  start)
+    echo -n "Starting $DESC: "
+    daemon $NICELEVEL $REDIS
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && touch /var/lock/subsys/redis-server
+    ;;
+  stop)
+    echo "Stopping $DESC"
+    killproc redis-server
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && touch /var/lock/subsys/redis-server
+    ;;
+  restart|force-reload)
+    ${0} stop
+    ${0} start
+    RETVAL=$?
+    ;;
+  status)
+    status redis-server
+    RETVAL=$?
+  *)
+    echo "Usage: $0 {start|stop|restart|force-reload|status}"
+    exit 1
+    ;;
+esac
+
+exit $RETVAL
