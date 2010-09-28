@@ -46,7 +46,7 @@ define redis_source(
     }
     file { "/etc/init.d/redis-server":
          content => $operatingsystem ? {
-           'redhat' => template("redis/redis-server.redhat.erb"),
+           'RedHat' => template("redis/redis-server.redhat.erb"),
            default  => template("redis/redis-server.erb")
          },
          owner => root,

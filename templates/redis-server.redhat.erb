@@ -1,16 +1,13 @@
 #! /bin/sh
-### BEGIN INIT INFO
-# Provides:     redis-server
-# Required-Start:   $syslog
-# Required-Stop:    $syslog
-# Should-Start:     $local_fs
-# Should-Stop:      $local_fs
-# Default-Start:    2 3 4 5
-# Default-Stop:     0 1 6
-# Short-Description:    redis-server - Persistent key-value db
-# Description:      redis-server - Persistent key-value db
-### END INIT INFO
-
+#
+# redis-server  Persistent key-value db
+#
+# Author: Ralph Churchill <ralph.churchill@docvia.com>
+#
+# description:  Redis is a high-speed, persistent key-value db.
+# processname:  redis-server
+# pidfile:      /var/run/redis-server.pid
+# config:       /etc/redis.conf
 
 # Source function library.
 . /etc/rc.d/init.d/functions
@@ -18,7 +15,8 @@
 # Source networking configuration.
 . /etc/sysconfig/network
 
-REDIS=/usr/local/bin/redis
+REDIS=/usr/local/bin/redis-server
+REDIS_ARGS=/etc/redis.conf
 
 [ -f $REDIS ] || exit 0
 
@@ -27,7 +25,7 @@ RETVAL=0
 case "$1" in
   start)
     echo -n "Starting $DESC: "
-    daemon $NICELEVEL $REDIS
+    daemon $NICELEVEL $REDIS $REDIS_ARGS
     RETVAL=$?
     echo
     [ $RETVAL = 0 ] && touch /var/lock/subsys/redis-server
@@ -47,6 +45,7 @@ case "$1" in
   status)
     status redis-server
     RETVAL=$?
+    ;;
   *)
     echo "Usage: $0 {start|stop|restart|force-reload|status}"
     exit 1
