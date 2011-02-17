@@ -56,6 +56,8 @@ define redis_source(
     file { "/etc/redis.conf":
         ensure => present,
         content => template("redis/redis.conf.erb"),
+        owner => root,
+        group => root,
         replace => false;
     }
 }
